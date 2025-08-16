@@ -1,4 +1,4 @@
- body {
+body {
       margin: 0;
       font-family: sans-serif;
       background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
@@ -7,7 +7,6 @@
       justify-content: center;
       align-items: center;
     }
-
     .container {
       background: rgba(255, 255, 255, 0.1);
       border-radius: 15px;
@@ -15,7 +14,6 @@
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
-
     .items {
       display: flex;
       gap: 10px;
@@ -28,8 +26,12 @@
       border: 2px solid rgba(255, 255, 255, 0.1);
       overflow-x: auto;
       overflow-y: hidden;
+      cursor: grab;
+      user-select: none;
     }
-
+    .items:active {
+      cursor: grabbing;
+    }
     .item {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
@@ -39,29 +41,13 @@
       font-size: 14px;
       font-weight: bold;
       border-radius: 8px;
-      cursor: grab;
       user-select: none;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      position: relative;
-      min-width: 80px;
+      min-width: 100px;
       height: 60px;
       flex-shrink: 0;
+      pointer-events: none;
     }
-
-    .item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .item.dragging {
-      cursor: grabbing;
-      transform: scale(1.05);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-      z-index: 1000;
-      position: absolute;
-    }
-
     .instructions {
       text-align: center;
       color: white;
