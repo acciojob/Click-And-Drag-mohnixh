@@ -1,38 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Click and Drag</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click and Drag</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="header">
-        <h1>Draggable Cubes Demo</h1>
-        <div class="status" id="status">Click and drag any cube to move it around!</div>
+    <div class="items" id="items">
+        <div class="item" data-index="0">
+            <img src="https://source.unsplash.com/300x200/?beach" alt="Beach">
+            <p>🏖️ Beautiful Beach</p>
+        </div>
+        <div class="item" data-index="1">
+            <img src="https://source.unsplash.com/300x200/?mountain" alt="Mountain">
+            <p>⛰️ Scenic Mountain</p>
+        </div>
+        <div class="item" data-index="2">
+            <img src="https://source.unsplash.com/300x200/?forest" alt="Forest">
+            <p>🌲 Dense Forest</p>
+        </div>
+        <div class="item" data-index="3">
+            <img src="https://source.unsplash.com/300x200/?city" alt="City">
+            <p>🏙️ Urban City</p>
+        </div>
+        <div class="item" data-index="4">
+            <img src="https://source.unsplash.com/300x200/?ocean" alt="Ocean">
+            <p>🌊 Deep Ocean</p>
+        </div>
+        <div class="item" data-index="5">
+            <img src="https://source.unsplash.com/300x200/?desert" alt="Desert">
+            <p>🏜️ Vast Desert</p>
+        </div>
+        <div class="item" data-index="6">
+            <img src="https://source.unsplash.com/300x200/?lake" alt="Lake">
+            <p>🏞️ Calm Lake</p>
+        </div>
+        <div class="item" data-index="7">
+            <img src="https://source.unsplash.com/300x200/?garden" alt="Garden">
+            <p>🌺 Flower Garden</p>
+        </div>
     </div>
 
-    <div class="container" id="container">
-        <div class="cube">1</div>
-        <div class="cube">2</div>
-        <div class="cube">3</div>
-        <div class="cube">4</div>
-        <div class="cube">5</div>
-        <div class="cube">6</div>
-    </div>
-
-    <div class="instructions">
-        <h3>How to use:</h3>
-        <ul>
-            <li><strong>Click and drag</strong> any cube to move it around</li>
-            <li>Cubes are <strong>constrained</strong> within the blue container area</li>
-            <li><strong>Hover</strong> over cubes to see visual feedback</li>
-            <li>Try dragging cubes to the edges to see boundary detection</li>
-        </ul>
-    </div>
-
-<script>
-//Your code goes here 
-</script>
-
-  </body>
+    <script src="script.js"></script>
+</body>
 </html>
