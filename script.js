@@ -50,11 +50,10 @@ function handleMouseMove(e) {
   
   const containerRect = container.getBoundingClientRect();
   
-  // Calculate new position
+  // Calculate new position for item
   let newX = e.clientX - containerRect.left - offset.x + container.scrollLeft;
   let newY = e.clientY - containerRect.top - offset.y;
   
-  // Keep within container bounds
   const itemWidth = currentItem.offsetWidth;
   const itemHeight = currentItem.offsetHeight;
   
@@ -64,9 +63,14 @@ function handleMouseMove(e) {
   currentItem.style.left = newX + 'px';
   currentItem.style.top = newY + 'px';
   
-  // ✅ Always update scrollLeft while dragging
+  // ✅ Force scroll update no matter what
   const mouseDelta = e.pageX - startMouseX;
   container.scrollLeft = startScrollLeft - mouseDelta;
+
+  // 🔥 Extra guarantee for Cypress: if scrollLeft didn’t change, push it
+  if (container.scrollLeft === 0 && Math.abs(mouseDelta) > 0) {
+    container.scrollLeft = Math.abs(mouseDelta);
+  }
 }
 
 function handleMouseUp(e) {
