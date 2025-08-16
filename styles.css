@@ -17,16 +17,22 @@ body {
     }
 
     .items {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      display: flex;
       gap: 10px;
       width: 400px;
-      height: 400px;
+      height: 200px;
       background: rgba(255, 255, 255, 0.05);
       border-radius: 10px;
       padding: 20px;
       position: relative;
       border: 2px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .items.dragging {
+      cursor: grabbing;
     }
 
     .item {
@@ -38,27 +44,16 @@ body {
       font-size: 14px;
       font-weight: bold;
       border-radius: 8px;
-      cursor: grab;
       user-select: none;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      position: relative;
-      width: 60px;
+      min-width: 60px;
       height: 60px;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
     }
 
     .item:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .item.dragging {
-      cursor: grabbing;
-      transform: scale(1.05);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-      z-index: 1000;
-      position: absolute;
-      transition: none;
     }
 
     .instructions {
@@ -66,4 +61,3 @@ body {
       color: white;
       margin-bottom: 20px;
       font-size: 16px;
-    }

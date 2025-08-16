@@ -1,114 +1,60 @@
-// Your code here.
-const items = document.querySelectorAll('.item');
-const container = document.getElementById('container');
+const items = document.querySelector('.items');
 
 // Variables to track dragging state
-let isDragging = false;
-let currentItem = null;
-let offset = { x: 0, y: 0 };
+let isDown = false;
+let startX;
+let scrollLeft;
 
-// Add event listeners to each item
-items.forEach(item => {
-  item.addEventListener('mousedown', handleMouseDown);
+// Mouse down event - start dragging
+items.addEventListener('mousedown', (e) => {
+  isDown = true;
+  items.classList.add('dragging');
+  startX = e.pageX - items.offsetLeft;
+  scrollLeft = items.scrollLeft;
 });
 
-// Add global event listeners for mouse movement and release
-document.addEventListener('mousemove', handleMouseMove);
-document.addEventListener('mouseup', handleMouseUp);
+// Mouse leave event - stop dragging if mouse leaves container
+items.addEventListener('mouseleave', () => {
+  isDown = false;
+  items.classList.remove('dragging');
+});
 
-function handleMouseDown(e) {
+// Mouse up event - stop dragging
+items.addEventListener('mouseup', () => {
+  isDown = false;
+  items.classList.remove('dragging');
+});
+
+// Mouse move event - handle dragging
+items.addEventListener('mousemove', (e) => {
+  if (!isDown) return;
   e.preventDefault();
-  
-  // Set the current item being dragged
-  currentItem = e.target;
-  isDragging = true;
-  
-  // Add dragging class for visual feedback
-  currentItem.classList.add('dragging');
-  
-  // Get the container boundaries
-  const containerRect = container.getBoundingClientRect();
-  const itemRect = currentItem.getBoundingClientRect();
-  
-  // Calculate offset from mouse to item's top-left corner
-  offset.x = e.clientX - itemRect.left;
-  offset.y = e.clientY - itemRect.top;
-  
-  // Convert to absolute positioning
-  currentItem.style.position = 'absolute';
-  currentItem.style.left = (itemRect.left - containerRect.left) + 'px';
-  currentItem.style.top = (itemRect.top - containerRect.top) + 'px';
-}
+  const x = e.pageX - items.offsetLeft;
+  const walk = (x - startX) * 2; // Multiply by 2 for faster scrolling
+  items.scrollLeft = scrollLeft - walk;
+});
 
-function handleMouseMove(e) {
-  if (!isDragging || !currentItem) return;
-  
-  e.preventDefault();
-  
-  // Get container boundaries
-  const containerRect = container.getBoundingClientRect();
-  const itemWidth = currentItem.offsetWidth;
-  const itemHeight = currentItem.offsetHeight;
-  
-  // Calculate new position relative to container
-  let newX = e.clientX - containerRect.left - offset.x;
-  let newY = e.clientY - containerRect.top - offset.y;
-  
-  // Apply boundary constraints
-  newX = Math.max(0, Math.min(newX, container.clientWidth - itemWidth));
-  newY = Math.max(0, Math.min(newY, container.clientHeight - itemHeight));
-  
-  // Update item position
-  currentItem.style.left = newX + 'px';
-  currentItem.style.top = newY + 'px';
-}
-
-function handleMouseUp(e) {
-  if (!isDragging || !currentItem) return;
-  
-  // Reset dragging state
-  isDragging = false;
-  currentItem.classList.remove('dragging');
-  currentItem = null;
-}
-
-// Prevent default drag behavior on images and other elements
-document.addEventListener('dragstart', (e) => {
+// Prevent default drag behavior
+items.addEventListener('dragstart', (e) => {
   e.preventDefault();
 });
 
-// Optional: Add touch support for mobile devices
-items.forEach(item => {
-  item.addEventListener('touchstart', handleTouchStart, { passive: false });
+// Touch support for mobile devices
+items.addEventListener('touchstart', (e) => {
+  isDown = true;
+  items.classList.add('dragging');
+  startX = e.touches[0].pageX - items.offsetLeft;
+  scrollLeft = items.scrollLeft;
+}, { passive: true });
+
+items.addEventListener('touchend', () => {
+  isDown = false;
+  items.classList.remove('dragging');
 });
 
-document.addEventListener('touchmove', handleTouchMove, { passive: false });
-document.addEventListener('touchend', handleTouchEnd);
-
-function handleTouchStart(e) {
-  e.preventDefault();
-  const touch = e.touches[0];
-  const mouseEvent = new MouseEvent('mousedown', {
-    clientX: touch.clientX,
-    clientY: touch.clientY
-  });
-  e.target.dispatchEvent(mouseEvent);
-}
-
-function handleTouchMove(e) {
-  if (!isDragging) return;
-  e.preventDefault();
-  const touch = e.touches[0];
-  const mouseEvent = new MouseEvent('mousemove', {
-    clientX: touch.clientX,
-    clientY: touch.clientY
-  });
-  document.dispatchEvent(mouseEvent);
-}
-
-function handleTouchEnd(e) {
-  if (!isDragging) return;
-  e.preventDefault();
-  const mouseEvent = new MouseEvent('mouseup', {});
-  document.dispatchEvent(mouseEvent);
-}
+items.addEventListener('touchmove', (e) => {
+  if (!isDown) return;
+  const x = e.touches[0].pageX - items.offsetLeft;
+  const walk = (x - startX) * 2;
+  items.scrollLeft = scrollLeft - walk;
+}, { passive: true });
