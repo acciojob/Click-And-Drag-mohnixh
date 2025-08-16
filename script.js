@@ -33,7 +33,7 @@ class ClickAndDrag {
     handleMouseDown(e) {
         this.isDown = true;
         this.slider.classList.add('dragging');
-        this.startX = e.pageX - this.slider.offsetLeft;
+        this.startX = e.pageX;
         this.scrollLeft = this.slider.scrollLeft;
         
         // Prevent text selection
@@ -55,16 +55,16 @@ class ClickAndDrag {
         
         e.preventDefault();
         
-        const x = e.pageX - this.slider.offsetLeft;
-        this.walkX = (x - this.startX) * 2; // Multiply by 2 for faster scrolling
-        this.slider.scrollLeft = this.scrollLeft - this.walkX;
+        const x = e.pageX;
+        this.walkX = this.startX - x; // Distance moved (positive = moved left, negative = moved right)
+        this.slider.scrollLeft = this.scrollLeft + this.walkX;
     }
     
     // Touch event handlers for mobile devices
     handleTouchStart(e) {
         this.isDown = true;
         this.slider.classList.add('dragging');
-        this.startX = e.touches[0].pageX - this.slider.offsetLeft;
+        this.startX = e.touches[0].pageX;
         this.scrollLeft = this.slider.scrollLeft;
     }
     
@@ -78,9 +78,9 @@ class ClickAndDrag {
         
         e.preventDefault();
         
-        const x = e.touches[0].pageX - this.slider.offsetLeft;
-        this.walkX = (x - this.startX) * 2;
-        this.slider.scrollLeft = this.scrollLeft - this.walkX;
+        const x = e.touches[0].pageX;
+        this.walkX = this.startX - x;
+        this.slider.scrollLeft = this.scrollLeft + this.walkX;
     }
     
     // Public methods for testing and external control
