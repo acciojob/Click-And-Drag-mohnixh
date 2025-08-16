@@ -30,8 +30,8 @@ items.addEventListener('mousemove', (e) => {
   if (!isDown) return;
   e.preventDefault();
   const x = e.pageX - items.offsetLeft;
-  const walk = (x - startX) * 2; // Multiply by 2 for faster scrolling
-  items.scrollLeft = scrollLeft - walk;
+  const walk = (x - startX); // Distance moved
+  items.scrollLeft = scrollLeft - walk; // Drag left = scroll right (positive scrollLeft)
 });
 
 // Prevent default drag behavior
@@ -55,6 +55,6 @@ items.addEventListener('touchend', () => {
 items.addEventListener('touchmove', (e) => {
   if (!isDown) return;
   const x = e.touches[0].pageX - items.offsetLeft;
-  const walk = (x - startX) * 2;
+  const walk = (x - startX);
   items.scrollLeft = scrollLeft - walk;
 }, { passive: true });
