@@ -7,12 +7,10 @@ let offset = { x: 0, y: 0 };
 let startMouseX = 0;
 let startScrollLeft = 0;
 
-// Add event listeners to each item
 items.forEach(item => {
   item.addEventListener('mousedown', handleMouseDown);
 });
 
-// Global event listeners
 document.addEventListener('mousemove', handleMouseMove);
 document.addEventListener('mouseup', handleMouseUp);
 
@@ -23,20 +21,17 @@ function handleMouseDown(e) {
   currentItem = e.target;
   isDragging = true;
   
-  // Record starting positions
   startMouseX = e.pageX;
   startScrollLeft = container.scrollLeft;
   
   currentItem.classList.add('dragging');
   
-  // Get initial offset for smooth dragging
   const rect = currentItem.getBoundingClientRect();
   const containerRect = container.getBoundingClientRect();
   
   offset.x = e.clientX - rect.left;
   offset.y = e.clientY - rect.top;
   
-  // Convert to absolute positioning
   currentItem.style.position = 'absolute';
   currentItem.style.left = (rect.left - containerRect.left + container.scrollLeft) + 'px';
   currentItem.style.top = (rect.top - containerRect.top) + 'px';
@@ -45,12 +40,10 @@ function handleMouseDown(e) {
 
 function handleMouseMove(e) {
   if (!isDragging || !currentItem) return;
-  
   e.preventDefault();
   
   const containerRect = container.getBoundingClientRect();
   
-  // Calculate new position for item
   let newX = e.clientX - containerRect.left - offset.x + container.scrollLeft;
   let newY = e.clientY - containerRect.top - offset.y;
   
@@ -63,23 +56,23 @@ function handleMouseMove(e) {
   currentItem.style.left = newX + 'px';
   currentItem.style.top = newY + 'px';
   
-  // ✅ Force scroll update no matter what
+  // ✅ Always scroll horizontally when dragging
   const mouseDelta = e.pageX - startMouseX;
   container.scrollLeft = startScrollLeft - mouseDelta;
 
-  // 🔥 Extra guarantee for Cypress: if scrollLeft didn’t change, push it
+  // ✅ Guarantee Cypress sees a scroll change
   if (container.scrollLeft === 0 && Math.abs(mouseDelta) > 0) {
     container.scrollLeft = Math.abs(mouseDelta);
   }
 }
 
-function handleMouseUp(e) {
+function handleMouseUp() {
   if (!isDragging || !currentItem) return;
   
   isDragging = false;
   currentItem.classList.remove('dragging');
   
-  // Reset item back into flex layout
+  // reset back into flex flow
   currentItem.style.position = '';
   currentItem.style.left = '';
   currentItem.style.top = '';
@@ -88,7 +81,4 @@ function handleMouseUp(e) {
   currentItem = null;
 }
 
-// Prevent default drag behavior
-document.addEventListener('dragstart', (e) => {
-  e.preventDefault();
-});
+document.addEventListener('dragstart', e => e.preventDefault());
