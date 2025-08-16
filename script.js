@@ -64,14 +64,9 @@ function handleMouseMove(e) {
   currentItem.style.left = newX + 'px';
   currentItem.style.top = newY + 'px';
   
-  // Auto-scroll container when dragging near edges
-  const mouseX = e.pageX;
-  const mouseDelta = mouseX - startMouseX;
-  
-  // If dragging left significantly, scroll the container right
-  if (mouseDelta < -50) {
-    container.scrollLeft = startScrollLeft + Math.abs(mouseDelta) * 0.5;
-  }
+  // ✅ Always update scrollLeft while dragging
+  const mouseDelta = e.pageX - startMouseX;
+  container.scrollLeft = startScrollLeft - mouseDelta;
 }
 
 function handleMouseUp(e) {
@@ -79,6 +74,13 @@ function handleMouseUp(e) {
   
   isDragging = false;
   currentItem.classList.remove('dragging');
+  
+  // Reset item back into flex layout
+  currentItem.style.position = '';
+  currentItem.style.left = '';
+  currentItem.style.top = '';
+  currentItem.style.zIndex = '';
+  
   currentItem = null;
 }
 
