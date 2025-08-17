@@ -7,12 +7,17 @@ document.addEventListener("DOMContentLoaded", () => {
   let offsetY = 0;
 
   cubes.forEach((cube) => {
+    // Give initial positions so they appear inside container
+    const rect = container.getBoundingClientRect();
+    cube.style.left = `${Math.random() * (rect.width - 80)}px`;
+    cube.style.top = `${Math.random() * (rect.height - 80)}px`;
+
     cube.addEventListener("mousedown", (e) => {
       selectedCube = cube;
-      const rect = cube.getBoundingClientRect();
-      offsetX = e.clientX - rect.left;
-      offsetY = e.clientY - rect.top;
-      cube.style.zIndex = 1000; // bring dragged cube above others
+      const cubeRect = cube.getBoundingClientRect();
+      offsetX = e.clientX - cubeRect.left;
+      offsetY = e.clientY - cubeRect.top;
+      cube.style.zIndex = 1000; // bring cube above others
     });
   });
 
