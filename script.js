@@ -1,80 +1,29 @@
-const container = document.getElementById("container");
-const cubeSize = 90;
-const gap = 10;
-const cols = 5;
-const rows = 5;
+const slider = document.querySelector('.items');
+let isDown = false;
+let startX;
+let scrollLeft;
 
-// Create grid of cubes
-for (let row = 0; row < rows; row++) {
-  for (let col = 0; col < cols; col++) {
-    const cube = document.createElement("div");
-    cube.className = "cube";
-    cube.style.left = `${col * (cubeSize + gap)}px`;
-    cube.style.top = `${row * (cubeSize + gap)}px`;
-    container.appendChild(cube);
-  }
-}
-
-let selectedCube = null;
-let offsetX = 0, offsetY = 0;
-let initialX = 0, initialY = 0;
-let dragged = false;
-
-container.addEventListener("mousedown", (e) => {
-  if (e.target.classList.contains("cube")) {
-    selectedCube = e.target;
-    selectedCube.classList.add("dragging");
-
-    const rect = selectedCube.getBoundingClientRect();
-    const containerRect = container.getBoundingClientRect();
-
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
-
-    // Save initial position
-    initialX = rect.left - containerRect.left;
-    initialY = rect.top - containerRect.top;
-    dragged = false;
-  }
+slider.addEventListener('mousedown', (e) => {
+  isDown = true;
+  slider.classList.add('active');
+  startX = e.pageX - slider.offsetLeft;
+  scrollLeft = slider.scrollLeft;
 });
 
-document.addEventListener("mousemove", (e) => {
-  if (selectedCube) {
-    dragged = true;
-    const containerRect = container.getBoundingClientRect();
-
-    let x = e.clientX - containerRect.left - offsetX;
-    let y = e.clientY - containerRect.top - offsetY;
-
-    // Constrain inside container
-    x = Math.max(0, Math.min(x, container.offsetWidth - cubeSize));
-    y = Math.max(0, Math.min(y, container.offsetHeight - cubeSize));
-
-    selectedCube.style.left = `${x}px`;
-    selectedCube.style.top = `${y}px`;
-  }
+slider.addEventListener('mouseleave', () => {
+  isDown = false;
+  slider.classList.remove('active');
 });
 
-document.addEventListener("mouseup", () => {
-  if (selectedCube) {
-    selectedCube.classList.remove("dragging");
+slider.addEventListener('mouseup', () => {
+  isDown = false;
+  slider.classList.remove('active');
+});
 
-    if (!dragged) {
-      // If it was just a click, reset position
-      selectedCube.style.left = `${initialX}px`;
-      selectedCube.style.top = `${initialY}px`;
-    } else {
-      // Ensure final position inside bounds
-      let x = parseInt(selectedCube.style.left);
-      let y = parseInt(selectedCube.style.top);
-
-      x = Math.max(0, Math.min(x, container.offsetWidth - cubeSize));
-      y = Math.max(0, Math.min(y, container.offsetHeight - cubeSize));
-
-      selectedCube.style.left = `${x}px`;
-      selectedCube.style.top = `${y}px`;
-    }
-
-    selectedCube = null;
-  }
+slider.addEventListener('mousemove', (e) => {
+  if (!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - slider.offsetLeft;
+  const walk = (x - startX); // distance moved
+  slider.scrollLeft = scrollLeft - walk;
 });
