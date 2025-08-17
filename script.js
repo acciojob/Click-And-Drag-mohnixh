@@ -6,7 +6,7 @@ let scrollLeft;
 slider.addEventListener('mousedown', (e) => {
   isDown = true;
   slider.classList.add('active');
-  startX = e.pageX - slider.offsetLeft;
+  startX = e.pageX;  // use raw pageX for Cypress
   scrollLeft = slider.scrollLeft;
 });
 
@@ -23,7 +23,7 @@ slider.addEventListener('mouseup', () => {
 slider.addEventListener('mousemove', (e) => {
   if (!isDown) return;
   e.preventDefault();
-  const x = e.pageX - slider.offsetLeft;
-  const walk = (x - startX); // distance moved
+  const x = e.pageX;   // use pageX directly
+  const walk = x - startX;
   slider.scrollLeft = scrollLeft - walk;
 });
