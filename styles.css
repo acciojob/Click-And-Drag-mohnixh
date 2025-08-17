@@ -5,6 +5,7 @@ body {
   height: 100vh;
   background: #f4f4f4;
   margin: 0;
+  font-family: Arial, sans-serif;
 }
 
 .items {
@@ -13,21 +14,23 @@ body {
   border: 2px solid #333;
   background: #fff;
   display: flex;
-  overflow-x: scroll;   /* important */
+  overflow-x: scroll;   /* critical for Cypress */
+  overflow-y: hidden;
+  white-space: nowrap;  /* keep cubes in one line */
   cursor: grab;
-  scroll-behavior: smooth;
 }
 
 .cube {
-  min-width: 150px;
+  flex: 0 0 auto;       /* prevents shrinking */
+  width: 200px;
   height: 150px;
+  margin: 10px;
+  border-radius: 8px;
   background: #4CAF50;
   color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px;
-  border-radius: 8px;
-  font-size: 20px;
-  flex-shrink: 0;
+  font-size: 24px;
+  user-select: none;
 }
