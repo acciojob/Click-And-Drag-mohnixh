@@ -1,148 +1,34 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background: #f0f0f0;
 }
 
-.items {
-    display: flex;
-    width: 100%;
-    max-width: 800px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    cursor: grab;
-    user-select: none;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    scroll-behavior: unset;
+.container {
+  width: 500px;
+  height: 500px;
+  background: #fff;
+  border: 2px solid #333;
+  position: relative;
+  overflow: hidden;
 }
 
-.items:active {
-    cursor: grabbing;
+.cube {
+  width: 90px;
+  height: 90px;
+  background: steelblue;
+  border-radius: 8px;
+  cursor: grab;
+  user-select: none;
+  position: absolute;
+  transition: left 0.15s ease, top 0.15s ease; /* smooth snapping */
 }
 
-.items::-webkit-scrollbar {
-    height: 12px;
-}
-
-.items::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-}
-
-.items::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-    border: 2px solid transparent;
-    background-clip: content-box;
-}
-
-.items::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-    background-clip: content-box;
-}
-
-.item {
-    min-width: 250px;
-    width: 250px;
-    height: 300px;
-    margin-right: 20px;
-    background: white;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    flex-shrink: 0;
-}
-
-.item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.item:last-child {
-    margin-right: 0;
-}
-
-.item img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-.item p {
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    margin: 0;
-}
-
-/* Dragging state */
-.items.dragging {
-    cursor: grabbing;
-    scroll-behavior: unset;
-}
-
-.items.dragging .item {
-    pointer-events: none;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .items {
-        max-width: 100%;
-        padding: 15px;
-    }
-    
-    .item {
-        min-width: 180px;
-        height: 220px;
-        padding: 12px;
-    }
-    
-    .item img {
-        height: 120px;
-    }
-    
-    .item p {
-        font-size: 14px;
-    }
-}
-
-@media (max-width: 480px) {
-    .item {
-        min-width: 160px;
-        height: 200px;
-        padding: 10px;
-    }
-    
-    .item img {
-        height: 100px;
-    }
-    
-    .item p {
-        font-size: 13px;
-    }
+.cube.dragging {
+  cursor: grabbing;
+  opacity: 0.8;
+  transition: none; /* disable snap while dragging */
 }

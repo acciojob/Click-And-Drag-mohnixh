@@ -1,147 +1,80 @@
-class ClickAndDrag {
-    constructor() {
-        this.slider = document.querySelector('.items');
-        this.isDown = false;
-        this.startX = 0;
-        this.scrollLeft = 0;
-        this.walkX = 0;
-        
-        this.init();
-    }
-    
-    init() {
-        if (!this.slider) return;
-        
-        // Mouse events
-        this.slider.addEventListener('mousedown', (e) => this.handleMouseDown(e));
-        this.slider.addEventListener('mouseleave', () => this.handleMouseLeave());
-        this.slider.addEventListener('mouseup', () => this.handleMouseUp());
-        this.slider.addEventListener('mousemove', (e) => this.handleMouseMove(e));
-        
-        // Touch events for mobile support
-        this.slider.addEventListener('touchstart', (e) => this.handleTouchStart(e));
-        this.slider.addEventListener('touchend', () => this.handleTouchEnd());
-        this.slider.addEventListener('touchmove', (e) => this.handleTouchMove(e));
-        
-        // Prevent context menu on right click
-        this.slider.addEventListener('contextmenu', (e) => e.preventDefault());
-        
-        // Prevent image dragging
-        this.slider.addEventListener('dragstart', (e) => e.preventDefault());
-    }
-    
-    handleMouseDown(e) {
-        this.isDown = true;
-        this.slider.classList.add('dragging');
-        this.startX = e.pageX;
-        this.scrollLeft = this.slider.scrollLeft;
-        
-        // Prevent text selection
-        e.preventDefault();
-    }
-    
-    handleMouseLeave() {
-        this.isDown = false;
-        this.slider.classList.remove('dragging');
-    }
-    
-    handleMouseUp() {
-        this.isDown = false;
-        this.slider.classList.remove('dragging');
-    }
-    
-    handleMouseMove(e) {
-        if (!this.isDown) return;
-        
-        e.preventDefault();
-        
-        const x = e.pageX;
-        this.walkX = this.startX - x; // Distance moved (positive = moved left, negative = moved right)
-        this.slider.scrollLeft = this.scrollLeft + this.walkX;
-    }
-    
-    // Touch event handlers for mobile devices
-    handleTouchStart(e) {
-        this.isDown = true;
-        this.slider.classList.add('dragging');
-        this.startX = e.touches[0].pageX;
-        this.scrollLeft = this.slider.scrollLeft;
-    }
-    
-    handleTouchEnd() {
-        this.isDown = false;
-        this.slider.classList.remove('dragging');
-    }
-    
-    handleTouchMove(e) {
-        if (!this.isDown) return;
-        
-        e.preventDefault();
-        
-        const x = e.touches[0].pageX;
-        this.walkX = this.startX - x;
-        this.slider.scrollLeft = this.scrollLeft + this.walkX;
-    }
-    
-    // Public methods for testing and external control
-    scrollTo(position) {
-        if (this.slider) {
-            this.slider.scrollLeft = position;
-        }
-    }
-    
-    getScrollPosition() {
-        return this.slider ? this.slider.scrollLeft : 0;
-    }
-    
-    getMaxScroll() {
-        if (!this.slider) return 0;
-        return this.slider.scrollWidth - this.slider.clientWidth;
-    }
-    
-    // Method to programmatically trigger drag (useful for testing)
-    simulateDrag(startX, endX, duration = 300) {
-        if (!this.slider) return;
-        
-        const startScrollLeft = this.slider.scrollLeft;
-        const distance = startX - endX;
-        const targetScrollLeft = Math.max(0, Math.min(startScrollLeft + distance, this.getMaxScroll()));
-        
-        // Smooth animation
-        const startTime = performance.now();
-        
-        const animate = (currentTime) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            
-            // Easing function for smooth animation
-            const easeOutCubic = 1 - Math.pow(1 - progress, 3);
-            
-            this.slider.scrollLeft = startScrollLeft + (targetScrollLeft - startScrollLeft) * easeOutCubic;
-            
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            }
-        };
-        
-        requestAnimationFrame(animate);
-    }
+const container = document.getElementById("container");
+const cubeSize = 90;
+const gap = 10;
+const cols = 5;
+const rows = 5;
+
+// Create grid of cubes
+for (let row = 0; row < rows; row++) {
+  for (let col = 0; col < cols; col++) {
+    const cube = document.createElement("div");
+    cube.className = "cube";
+    cube.style.left = `${col * (cubeSize + gap)}px`;
+    cube.style.top = `${row * (cubeSize + gap)}px`;
+    container.appendChild(cube);
+  }
 }
 
-// Initialize the drag functionality when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.clickAndDrag = new ClickAndDrag();
+let selectedCube = null;
+let offsetX = 0, offsetY = 0;
+let initialX = 0, initialY = 0;
+let dragged = false;
+
+container.addEventListener("mousedown", (e) => {
+  if (e.target.classList.contains("cube")) {
+    selectedCube = e.target;
+    selectedCube.classList.add("dragging");
+
+    const rect = selectedCube.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+
+    // Save initial position
+    initialX = rect.left - containerRect.left;
+    initialY = rect.top - containerRect.top;
+    dragged = false;
+  }
 });
 
-// Utility functions for debugging and testing
-window.debugDrag = {
-    getScrollPosition: () => window.clickAndDrag?.getScrollPosition() || 0,
-    getMaxScroll: () => window.clickAndDrag?.getMaxScroll() || 0,
-    scrollTo: (position) => window.clickAndDrag?.scrollTo(position),
-    simulateDrag: (startX, endX, duration) => window.clickAndDrag?.simulateDrag(startX, endX, duration)
-};
+document.addEventListener("mousemove", (e) => {
+  if (selectedCube) {
+    dragged = true;
+    const containerRect = container.getBoundingClientRect();
 
-// Export for testing environments
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = ClickAndDrag;
-}
+    let x = e.clientX - containerRect.left - offsetX;
+    let y = e.clientY - containerRect.top - offsetY;
+
+    // Constrain inside container
+    x = Math.max(0, Math.min(x, container.offsetWidth - cubeSize));
+    y = Math.max(0, Math.min(y, container.offsetHeight - cubeSize));
+
+    selectedCube.style.left = `${x}px`;
+    selectedCube.style.top = `${y}px`;
+  }
+});
+
+document.addEventListener("mouseup", () => {
+  if (selectedCube) {
+    selectedCube.classList.remove("dragging");
+
+    if (!dragged) {
+      // If it was just a click, reset position
+      selectedCube.style.left = `${initialX}px`;
+      selectedCube.style.top = `${initialY}px`;
+    } else {
+      // Ensure final position inside bounds
+      let x = parseInt(selectedCube.style.left);
+      let y = parseInt(selectedCube.style.top);
+
+      x = Math.max(0, Math.min(x, container.offsetWidth - cubeSize));
+      y = Math.max(0, Math.min(y, container.offsetHeight - cubeSize));
+
+      selectedCube.style.left = `${x}px`;
+      selectedCube.style.top = `${y}px`;
+    }
+
+    selectedCube = null;
+  }
+});
