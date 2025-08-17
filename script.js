@@ -1,29 +1,29 @@
-const items = document.querySelector('.items');
+const slider = document.querySelector('.items');
 let isDown = false;
 let startX;
 let scrollLeft;
 
-items.addEventListener('mousedown', (e) => {
+slider.addEventListener('mousedown', (e) => {
   isDown = true;
-  items.classList.add('active');
-  startX = e.pageX - items.offsetLeft;
-  scrollLeft = items.scrollLeft;
+  slider.classList.add('active');
+  startX = e.pageX - slider.offsetLeft;
+  scrollLeft = slider.scrollLeft;
 });
 
-items.addEventListener('mouseleave', () => {
+slider.addEventListener('mouseleave', () => {
   isDown = false;
-  items.classList.remove('active');
+  slider.classList.remove('active');
 });
 
-items.addEventListener('mouseup', () => {
+slider.addEventListener('mouseup', () => {
   isDown = false;
-  items.classList.remove('active');
+  slider.classList.remove('active');
 });
 
-items.addEventListener('mousemove', (e) => {
+slider.addEventListener('mousemove', (e) => {
   if (!isDown) return;
   e.preventDefault();
-  const x = e.pageX - items.offsetLeft;
-  const walk = (x - startX) * 2; // drag speed
-  items.scrollLeft = scrollLeft - walk;
+  const x = e.pageX - slider.offsetLeft;
+  const walk = (x - startX) * 2; // scroll speed
+  slider.scrollLeft = scrollLeft - walk;
 });
