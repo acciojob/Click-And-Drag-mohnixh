@@ -1,48 +1,31 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const container = document.querySelector(".items"); // ✅ FIXED
-  const cubes = document.querySelectorAll(".cube");
+  const items = document.querySelector(".items");
+  let isDown = false;
+  let startX;
+  let scrollLeft;
 
-  let selectedCube = null;
-  let offsetX = 0;
-  let offsetY = 0;
-
-  cubes.forEach((cube) => {
-    cube.addEventListener("mousedown", (e) => {
-      selectedCube = cube;
-      const rect = cube.getBoundingClientRect();
-      offsetX = e.clientX - rect.left;
-      offsetY = e.clientY - rect.top;
-      cube.style.zIndex = 1000;
-      cube.style.position = "absolute"; // ensure cubes are movable
-    });
+  items.addEventListener("mousedown", (e) => {
+    isDown = true;
+    items.classList.add("active");
+    startX = e.pageX - items.offsetLeft;
+    scrollLeft = items.scrollLeft;
   });
 
-  document.addEventListener("mousemove", (e) => {
-    if (!selectedCube) return;
-
-    const containerRect = container.getBoundingClientRect();
-    const cubeRect = selectedCube.getBoundingClientRect();
-
-    let newX = e.clientX - containerRect.left - offsetX;
-    let newY = e.clientY - containerRect.top - offsetY;
-
-    if (newX < 0) newX = 0;
-    if (newY < 0) newY = 0;
-    if (newX + cubeRect.width > containerRect.width) {
-      newX = containerRect.width - cubeRect.width;
-    }
-    if (newY + cubeRect.height > containerRect.height) {
-      newY = containerRect.height - cubeRect.height;
-    }
-
-    selectedCube.style.left = `${newX}px`;
-    selectedCube.style.top = `${newY}px`;
+  items.addEventListener("mouseleave", () => {
+    isDown = false;
+    items.classList.remove("active");
   });
 
-  document.addEventListener("mouseup", () => {
-    if (selectedCube) {
-      selectedCube.style.zIndex = "";
-    }
-    selectedCube = null;
+  items.addEventListener("mouseup", () => {
+    isDown = false;
+    items.classList.remove("active");
+  });
+
+  items.addEventListener("mousemove", (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - items.offsetLeft;
+    const walk = (x - startX) * 2; // scroll speed factor
+    items.scrollLeft = scrollLeft - walk;
   });
 });
